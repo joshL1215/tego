@@ -95,6 +95,11 @@ func (s *Server) handleMessages(w http.ResponseWriter, r *http.Request) {
 
 	elapsed := time.Since(start)
 
+	// Write to log file
+	if s.logger != nil {
+		s.logger.Log(r.URL.Path, originalSize, filteredSize, elapsed, results)
+	}
+
 	// Log
 	if len(results) > 0 {
 		savings := 0
