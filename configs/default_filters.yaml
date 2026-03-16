@@ -1,0 +1,62 @@
+filters:
+  strip_ansi: true
+  collapse_blank_lines: 3
+  collapse_repeated_lines: 3
+  collapse_passing_tests: 5
+
+  drop_lines:
+    # Progress bars
+    - pattern: "\\[([#=\\-]+|\\s*)\\]"
+      category: "progress-bar"
+    - pattern: "\\d+%\\s*[|│]?[█▓▒░▏▎▍▌▋▊▉]"
+      category: "progress-bar"
+    - pattern: "^\\s*downloading.*\\.\\.\\."
+      category: "progress-bar"
+
+    # npm noise
+    - pattern: "^npm warn"
+      category: "npm-warn"
+    - pattern: "^npm notice"
+      category: "npm-notice"
+    - pattern: "^npm http"
+      category: "npm-http"
+
+    # pip noise
+    - pattern: "^\\s*Collecting\\s"
+      category: "pip"
+    - pattern: "^\\s*Downloading\\s+https?://"
+      category: "pip"
+    - pattern: "^\\s*Installing collected packages:"
+      category: "pip"
+    - pattern: "^\\s*Successfully installed"
+      category: "pip"
+
+    # cargo noise
+    - pattern: "^\\s*Compiling\\s"
+      category: "cargo"
+    - pattern: "^\\s*Downloading\\s+crate"
+      category: "cargo"
+    - pattern: "^\\s*Downloaded\\s"
+      category: "cargo"
+
+    # git transfer noise
+    - pattern: "^remote:\\s*(Counting|Compressing|Enumerating)"
+      category: "git-transfer"
+    - pattern: "^(Receiving|Resolving) objects:"
+      category: "git-transfer"
+    - pattern: "^remote:\\s*Total\\s"
+      category: "git-transfer"
+
+    # Docker build noise
+    - pattern: "^Step \\d+/\\d+ :"
+      category: "docker"
+    - pattern: "^\\s*---> [a-f0-9]+"
+      category: "docker"
+    - pattern: "^Removing intermediate container"
+      category: "docker"
+    - pattern: "^\\s*Successfully built [a-f0-9]+"
+      category: "docker"
+
+    # make noise
+    - pattern: "^make\\[\\d+\\]: (Entering|Leaving) directory"
+      category: "make"
