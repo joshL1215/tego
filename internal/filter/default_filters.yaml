@@ -60,3 +60,33 @@ filters:
     # make noise
     - pattern: "^make\\[\\d+\\]: (Entering|Leaving) directory"
       category: "make"
+
+  # Deduplication: collapse blocks of N+ matching consecutive lines,
+  # store original in SQLite, replace with summary + retrieval command.
+  deduplication_min_lines: 10  # heuristic fallback threshold
+
+  deduplication:
+    # npm install listings
+    - pattern: "^\\s*(added|removed)\\s+\\d+\\s+package"
+      category: "npm-install"
+      min_lines: 5
+    # pip package listings
+    - pattern: "^\\s*(Collecting|Downloading|Installing|Successfully)\\s"
+      category: "pip-install"
+      min_lines: 5
+    # File path listings (ls, find, tree output)
+    - pattern: "^[\\s]*[/\\.][\\w/\\.\\-]+$"
+      category: "file-listing"
+      min_lines: 15
+    # Compiler warnings (gcc/clang style)
+    - pattern: "^.*:\\d+:\\d+:\\s*(warning|note):"
+      category: "compiler-warning"
+      min_lines: 10
+    # JavaScript stack traces
+    - pattern: "^\\s+at\\s+"
+      category: "stack-trace"
+      min_lines: 8
+    # Python stack traces
+    - pattern: "^\\s+File\\s+\""
+      category: "stack-trace"
+      min_lines: 5

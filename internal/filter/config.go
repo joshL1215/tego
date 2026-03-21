@@ -17,13 +17,22 @@ type DropLineRule struct {
 	Category string `yaml:"category,omitempty"` // for logging, e.g. "npm-warn", "git-transfer"
 }
 
+// DeduplicationRule defines a pattern for collapsible blocks of output.
+type DeduplicationRule struct {
+	Pattern  string `yaml:"pattern"`
+	Category string `yaml:"category"`
+	MinLines int    `yaml:"min_lines"`
+}
+
 // Config holds all filter configuration.
 type Config struct {
-	StripANSI             bool           `yaml:"strip_ansi"`
-	CollapseBlankLines    int            `yaml:"collapse_blank_lines"`
-	CollapseRepeatedLines int            `yaml:"collapse_repeated_lines"`
-	CollapsePassingTests  int            `yaml:"collapse_passing_tests"`
-	DropLines             []DropLineRule `yaml:"drop_lines"`
+	StripANSI              bool                `yaml:"strip_ansi"`
+	CollapseBlankLines     int                 `yaml:"collapse_blank_lines"`
+	CollapseRepeatedLines  int                 `yaml:"collapse_repeated_lines"`
+	CollapsePassingTests   int                 `yaml:"collapse_passing_tests"`
+	DropLines              []DropLineRule      `yaml:"drop_lines"`
+	Deduplication          []DeduplicationRule `yaml:"deduplication"`
+	DeduplicationMinLines  int                 `yaml:"deduplication_min_lines"`
 }
 
 // FiltersFile is the top-level YAML structure.
