@@ -6,6 +6,7 @@ import (
 
 	"github.com/joshL1215/tego/internal/filter"
 	"github.com/joshL1215/tego/internal/proxy"
+	"github.com/joshL1215/tego/internal/store"
 	"github.com/joshL1215/tego/internal/testmode"
 	"github.com/spf13/cobra"
 )
@@ -26,8 +27,14 @@ func main() {
 				return fmt.Errorf("failed to load filter config: %w", err)
 			}
 
+			s, err := store.Open()
+			if err != nil {
+				return fmt.Errorf("failed to open dedup store: %w", err)
+			}
+			defer s.Close()
+
 			engine := filter.NewEngine(config)
-			server := proxy.NewServer(port, engine)
+			server := proxy.NewServer(port, engine, s)
 			return server.Start()
 		},
 	}
@@ -42,7 +49,27 @@ func main() {
 	}
 	testCmd.Flags().IntVar(&port, "port", 8400, "Port to listen on")
 
-	rootCmd.AddCommand(serveCmd, testCmd)
+	retrieveCmd := &cobra.Command{
+		Use:   "retrieve [id]",
+		Short: "Retrieve a deduplicated text block by its ID",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			s, err := store.Open()
+			if err != nil {
+				return fmt.Errorf("failed to open dedup store: %w", err)
+			}
+			defer s.Close()
+
+			content, err := s.Retrieve(args[0])
+			if err != nil {
+				return err
+			}
+			fmt.Print(content)
+			return nil
+		},
+	}
+
+	rootCmd.AddCommand(serveCmd, testCmd, retrieveCmd)
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)

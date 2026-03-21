@@ -180,7 +180,7 @@ func Run(port int) error {
 	}
 
 	engine := filter.NewEngine(config)
-	server := proxy.NewServer(port, engine)
+	server := proxy.NewServer(port, engine, nil)
 	server.SetUpstream(upstream.URL)
 
 	// Start proxy in background

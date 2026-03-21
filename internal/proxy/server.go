@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/joshL1215/tego/internal/filter"
+	"github.com/joshL1215/tego/internal/store"
 )
 
 const defaultUpstream = "https://api.anthropic.com"
@@ -17,8 +18,12 @@ type Server struct {
 	upstream string
 }
 
-// NewServer creates a new proxy server.
-func NewServer(port int, engine *filter.Engine) *Server {
+// NewServer creates a new proxy server. If a store is provided, it is attached
+// to the filter engine for deduplication.
+func NewServer(port int, engine *filter.Engine, s *store.Store) *Server {
+	if s != nil {
+		engine.SetStore(s)
+	}
 	return &Server{
 		Port:     port,
 		engine:   engine,
