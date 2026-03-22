@@ -21,25 +21,8 @@ filters:
     - pattern: "^npm http"
       category: "npm-http"
 
-    # pip noise
-    - pattern: "^\\s*Collecting\\s"
-      category: "pip"
-    - pattern: "^\\s*Downloading\\s"
-      category: "pip"
-    - pattern: "^\\s*Using cached\\s"
-      category: "pip"
-    - pattern: "^\\s*Installing collected packages:"
-      category: "pip"
-    - pattern: "^\\s*Successfully installed"
-      category: "pip"
-
-    # cargo noise
-    - pattern: "^\\s*Compiling\\s"
-      category: "cargo"
-    - pattern: "^\\s*Downloading\\s+crate"
-      category: "cargo"
-    - pattern: "^\\s*Downloaded\\s"
-      category: "cargo"
+    # pip and cargo noise handled by deduplication rules below
+    # (dedup stores original text for retrieval, drop_lines deletes permanently)
 
     # git transfer noise
     - pattern: "^remote:\\s*(Counting|Compressing|Enumerating)"
@@ -73,8 +56,12 @@ filters:
       category: "npm-install"
       min_lines: 5
     # pip package listings
-    - pattern: "^\\s*(Collecting|Downloading|Installing|Successfully)\\s"
+    - pattern: "^\\s*(Collecting|Downloading|Using cached|Installing collected|Successfully installed)\\s"
       category: "pip-install"
+      min_lines: 3
+    # cargo build output
+    - pattern: "^\\s*(Compiling|Downloading|Downloaded)\\s"
+      category: "cargo-build"
       min_lines: 5
     # File path listings (ls, find, tree output)
     - pattern: "^[\\s]*[/\\.][\\w/\\.\\-]+$"
