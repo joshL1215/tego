@@ -29,7 +29,12 @@ func Open() (*Store, error) {
 		return nil, fmt.Errorf("cannot create data directory: %w", err)
 	}
 
-	dbPath := filepath.Join(dir, "dedup.db")
+	return OpenAt(filepath.Join(dir, "dedup.db"))
+}
+
+// OpenAt creates or opens the dedup database at the given path
+// and runs TTL cleanup on startup.
+func OpenAt(dbPath string) (*Store, error) {
 	db, err := sql.Open("sqlite", dbPath)
 	if err != nil {
 		return nil, fmt.Errorf("cannot open database: %w", err)

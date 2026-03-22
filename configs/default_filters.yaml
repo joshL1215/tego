@@ -24,7 +24,9 @@ filters:
     # pip noise
     - pattern: "^\\s*Collecting\\s"
       category: "pip"
-    - pattern: "^\\s*Downloading\\s+https?://"
+    - pattern: "^\\s*Downloading\\s"
+      category: "pip"
+    - pattern: "^\\s*Using cached\\s"
       category: "pip"
     - pattern: "^\\s*Installing collected packages:"
       category: "pip"
