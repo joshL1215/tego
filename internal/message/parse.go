@@ -11,6 +11,8 @@ type ToolResultInfo struct {
 	Index         int
 	OriginalBytes int
 	FilteredBytes int
+	OriginalText  string
+	FilteredText  string
 	Stats         *filter.FilterStats
 }
 
@@ -53,6 +55,8 @@ func FilterToolResults(body []byte, engine *filter.Engine) ([]byte, []ToolResult
 						Index:         toolIdx,
 						OriginalBytes: stats.OriginalBytes,
 						FilteredBytes: stats.FilteredBytes,
+						OriginalText:  content,
+						FilteredText:  filtered,
 						Stats:         stats,
 					})
 				}
@@ -115,6 +119,8 @@ func filterToolResultContent(blockMap map[string]any, engine *filter.Engine, res
 				Index:         *toolIdx,
 				OriginalBytes: stats.OriginalBytes,
 				FilteredBytes: stats.FilteredBytes,
+				OriginalText:  content,
+				FilteredText:  filtered,
 				Stats:         stats,
 			})
 		}
@@ -142,6 +148,8 @@ func filterToolResultContent(blockMap map[string]any, engine *filter.Engine, res
 					Index:         *toolIdx,
 					OriginalBytes: stats.OriginalBytes,
 					FilteredBytes: stats.FilteredBytes,
+					OriginalText:  text,
+					FilteredText:  filtered,
 					Stats:         stats,
 				})
 			}
