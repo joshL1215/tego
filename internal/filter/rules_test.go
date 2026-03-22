@@ -53,11 +53,16 @@ func TestDropMatchingLines(t *testing.T) {
 	got, _, categories := dropMatchingLines(input, rules)
 	lines := strings.Split(got, "\n")
 
-	if len(lines) != 3 {
-		t.Errorf("expected 3 lines, got %d: %v", len(lines), lines)
+	// 3 kept lines + 5 summary lines (one per category)
+	if len(lines) != 8 {
+		t.Errorf("expected 8 lines, got %d: %v", len(lines), lines)
 	}
 	if lines[0] != "actual output line" {
 		t.Errorf("unexpected line[0]: %q", lines[0])
+	}
+	// Verify summary lines are present
+	if !strings.Contains(got, "[tego: stripped") {
+		t.Errorf("expected tego summary lines in output")
 	}
 	if categories["npm-warn"] != 1 {
 		t.Errorf("expected 1 npm-warn, got %d", categories["npm-warn"])
@@ -170,10 +175,10 @@ func TestEngineFullPipeline(t *testing.T) {
 	if !strings.Contains(got, "real output") {
 		t.Errorf("should contain real output")
 	}
-	if strings.Contains(got, "npm warn") {
-		t.Errorf("should not contain npm warn line")
+	if strings.Contains(got, "npm warn old dep") {
+		t.Errorf("should not contain original npm warn line")
 	}
-	if stats.FilteredBytes >= stats.OriginalBytes {
-		t.Errorf("filtered should be smaller: %d >= %d", stats.FilteredBytes, stats.OriginalBytes)
+	if !strings.Contains(got, "[tego: stripped 1 npm-warn lines]") {
+		t.Errorf("should contain tego summary for stripped lines")
 	}
 }

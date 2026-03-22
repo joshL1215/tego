@@ -18,7 +18,8 @@ func stripANSI(text string) (string, int) {
 	return ansiPattern.ReplaceAllString(text, ""), count
 }
 
-// dropMatchingLines removes lines matching any drop rule patterns.
+// dropMatchingLines removes lines matching any drop rule patterns and appends
+// a summary line per category so the LLM knows content was filtered.
 // Returns filtered text, progress bar count, and a map of category -> count.
 func dropMatchingLines(text string, rules []DropLineRule) (string, int, map[string]int) {
 	if len(rules) == 0 {
@@ -59,6 +60,11 @@ func dropMatchingLines(text string, rules []DropLineRule) (string, int, map[stri
 		if !dropped {
 			kept = append(kept, line)
 		}
+	}
+
+	// Append a summary line per category so the LLM knows lines were stripped
+	for cat, count := range categories {
+		kept = append(kept, fmt.Sprintf("[tego: stripped %d %s lines]", count, cat))
 	}
 
 	return strings.Join(kept, "\n"), progressBars, categories

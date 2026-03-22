@@ -56,8 +56,8 @@ func TestFilterToolResults_StringContent(t *testing.T) {
 	block := content[0].(map[string]any)
 	text := block["content"].(string)
 
-	if text != "actual output" {
-		t.Errorf("expected 'actual output', got %q", text)
+	if text != "actual output\n[tego: stripped 2 npm-warn lines]" {
+		t.Errorf("unexpected filtered content: %q", text)
 	}
 }
 
@@ -104,8 +104,8 @@ func TestFilterToolResults_ArrayContent(t *testing.T) {
 	textBlock := innerContent[0].(map[string]any)
 	text := textBlock["text"].(string)
 
-	if text != "actual output" {
-		t.Errorf("expected 'actual output', got %q", text)
+	if text != "actual output\n[tego: stripped 2 npm-warn lines]" {
+		t.Errorf("unexpected filtered content: %q", text)
 	}
 }
 
